@@ -60,8 +60,8 @@ def waiting_delay(delay): # 6 jam dalam detik
 def main():
 
     while True:
-        quest_selector = 'y'
-        wallet_selector = 'y'
+        quest_selector = input("want clear quest ? y/n  : ").strip().lower()    
+        wallet_selector = input("want create wallet ? y/n  : ").strip().lower() 
         queries = load_query()
         sum = len(queries)
         fastmint = Fastmint()
