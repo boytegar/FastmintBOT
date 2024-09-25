@@ -59,9 +59,11 @@ def waiting_delay(delay): # 6 jam dalam detik
 
 def main():
 
+    quest_selector = input("want clear quest ? y/n  : ").strip().lower()    
+    wallet_selector = input("want create wallet ? y/n  : ").strip().lower() 
+
     while True:
-        quest_selector = input("want clear quest ? y/n  : ").strip().lower()    
-        wallet_selector = input("want create wallet ? y/n  : ").strip().lower() 
+        
         queries = load_query()
         sum = len(queries)
         fastmint = Fastmint()
@@ -98,11 +100,24 @@ def main():
             data_checkin = fastmint.daily_checkin(token)
             visits = data_checkin.get('visits', 0)
             print_(f"Daily Checkin Done ")
+
+            time.sleep(2)
+            print_('Claim Farming ....')
+            data_start = fastmint.claim_farming(token, wallet_id)
+            if data_start is not None:
+                 print_(f"Claim Done ...")
+
             time.sleep(2)
             print_('Start Farming ....')
             data_start = fastmint.start_farming(token, wallet_id)
             if data_start is not None:
                  print_(f"Farming Done ...")
+
+            time.sleep(2)
+            print_('Claim Reff Balance ....')
+            data_start = fastmint.claim_ref(token)
+            if data_start is not None:
+                 print_(f"Claim Reff Balance Done ...")
 
             if wallet_selector == 'y':
                 print_('checking FMC wallet')
@@ -122,28 +137,28 @@ def main():
                      
             if quest_selector == 'y':
                 time.sleep(2)
-            data_task = fastmint.get_tasks(token)
-            if data_task is not None:
-                for task in data_task:
-                    done = task.get('done', False)
-                    claimed = task.get('claimed', False)
-                    if not done:
-                        time.sleep(2)
-                        print_(f"Starting Task : {task.get('title')}")
-                        recourceId = task.get('recourceId')
-                        data_done_task = fastmint.done_task(token, recourceId)
-                        if data_done_task is not None:
-                            id = data_done_task.get('id')
+                data_task = fastmint.get_tasks(token)
+                if data_task is not None:
+                    for task in data_task:
+                        done = task.get('done', False)
+                        claimed = task.get('claimed', False)
+                        if not done:
+                            time.sleep(2)
+                            print_(f"Starting Task : {task.get('title')}")
+                            recourceId = task.get('recourceId')
+                            data_done_task = fastmint.done_task(token, recourceId)
+                            if data_done_task is not None:
+                                id = data_done_task.get('id')
+                                data_complete = fastmint.complete_task(token, id)
+                                if data_complete is not None:
+                                    print_(f"Task {task.get('title')} Done")
+                        elif done and not claimed:
                             data_complete = fastmint.complete_task(token, id)
                             if data_complete is not None:
+                                id = task.get('id')
                                 print_(f"Task {task.get('title')} Done")
-                    elif done and not claimed:
-                        data_complete = fastmint.complete_task(token, id)
-                        if data_complete is not None:
-                            id = task.get('id')
+                        else:
                             print_(f"Task {task.get('title')} Done")
-                    else:
-                         print_(f"Task {task.get('title')} Done")
 
         end_time = time.time()
         total = delay - (end_time - start_time)

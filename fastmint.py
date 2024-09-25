@@ -84,6 +84,17 @@ class Fastmint():
             jsons = response.json()
             return jsons
     
+    def claim_farming(self, token, id):
+        url = "https://api.chaingn.org/wallet/claim"
+        self.headers.update({
+            'Authorization': f"Bearer {token}"
+            })
+        payload = {"id": id}
+        response = self.make_request('post', url, self.headers, payload)
+        if response is not None:
+            jsons = response.json()
+            return jsons
+        
     def start_farming(self, token, id):
         url = "https://api.chaingn.org/wallet/farm"
         self.headers.update({
@@ -95,6 +106,16 @@ class Fastmint():
             jsons = response.json()
             return jsons
     
+    def claim_ref(self, token):
+        url = 'https://api.chaingn.org/referral/claim'
+        self.headers.update({
+            'Authorization': f"Bearer {token}"
+            })
+        payload = {}
+        response = self.make_request('post', url, self.headers, payload)
+        if response is not None:
+            response
+        
     def get_tasks(self, token):
         url = 'https://api.chaingn.org/sub_tasks'
         self.headers.update({
