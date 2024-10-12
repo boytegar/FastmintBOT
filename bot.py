@@ -58,19 +58,17 @@ def waiting_delay(delay): # 6 jam dalam detik
     print_("\nWaiting Done, Starting....\n")
 
 def main():
-
     quest_selector = input("want clear quest ? y/n  : ").strip().lower()    
     wallet_selector = input("want create wallet ? y/n  : ").strip().lower() 
+    upgrade_selector = input("want auto upgrade ? y/n : ").strip().lower()
 
     while True:
-        
         queries = load_query()
         sum = len(queries)
         fastmint = Fastmint()
         delay = (6 * 3700)
         start_time = time.time()
         for index, query in enumerate(queries, start=1):
-            
             parse = parse_query(query)
             user = parse.get('user')
             print_(f"======== Account {index}/{sum} =========")
@@ -105,19 +103,33 @@ def main():
             print_('Claim Farming ....')
             data_start = fastmint.claim_farming(token, wallet_id)
             if data_start is not None:
-                 print_(f"Claim Done ...")
+                 print_(f"Claim Farming Done ...")
 
             time.sleep(2)
             print_('Start Farming ....')
             data_start = fastmint.start_farming(token, wallet_id)
             if data_start is not None:
-                 print_(f"Farming Done ...")
+                 print_(f"Start Farming Done ...")
 
             time.sleep(2)
             print_('Claim Reff Balance ....')
             data_start = fastmint.claim_ref(token)
             if data_start is not None:
                  print_(f"Claim Reff Balance Done ...")
+            else:
+                print_(f"Reff Balance Not Found")
+
+            if upgrade_selector == 'y':
+                print_("Upgraded..")
+                wallet_info = fastmint.wallet_info(token)
+                if wallet_info is not None:
+                    data_wallet = wallet_info[level]
+                    if data_wallet.get('cost',0) <= balance:
+                        payload = {"id":wallet_id}
+                        fastmint.upgrade(token, payload)
+                    else:
+                        print_("Balance Not enough for upgrade")
+
 
             if wallet_selector == 'y':
                 print_('checking FMC wallet')
@@ -145,6 +157,9 @@ def main():
                         if not done:
                             time.sleep(2)
                             print_(f"Starting Task : {task.get('title')}")
+                            if 'telegram' in task.get('title').lower():
+                                print_(f"Skipping Quest {task.get('title')}")
+                                continue
                             recourceId = task.get('recourceId')
                             data_done_task = fastmint.done_task(token, recourceId)
                             if data_done_task is not None:
@@ -152,6 +167,7 @@ def main():
                                 data_complete = fastmint.complete_task(token, id)
                                 if data_complete is not None:
                                     print_(f"Task {task.get('title')} Done")
+                                    
                         elif done and not claimed:
                             data_complete = fastmint.complete_task(token, id)
                             if data_complete is not None:

@@ -179,3 +179,25 @@ class Fastmint():
         if response is not None:
             jsons = response.json()
             return jsons
+    
+    def wallet_info(self, token):
+        url = 'https://api.chaingn.org/wallets/info'
+        self.headers.update({
+            'Authorization': f"Bearer {token}"
+            })
+        response = self.make_request('get', url, self.headers)
+        if response is not None:
+            jsons = response.json()
+            return jsons
+    
+    def upgrade(self, token, payload):
+        url = 'https://api.chaingn.org/wallet/upgrade'
+        headers = {
+            **self.headers,
+            'Authorization': f"Bearer {token}"
+        }
+        response = self.make_request('post', url, headers, data=payload)
+        if response is not None:
+            jsons = response.json()
+            print_("Upgraded Done")
+            return jsons
