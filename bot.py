@@ -151,7 +151,8 @@ def main():
                 time.sleep(2)
                 data_task = fastmint.get_tasks(token)
                 if data_task is not None:
-                    for task in data_task:
+                    tasks = data_task.get('tasks',[])
+                    for task in tasks:
                         done = task.get('done', False)
                         claimed = task.get('claimed', False)
                         if not done:
