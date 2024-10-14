@@ -164,6 +164,9 @@ def main():
                             if 'react' in task.get('title').lower():
                                 print_(f"Skipping Quest {task.get('title')}")
                                 continue
+                            if 'daily' in task.get('title').lower():
+                                print_(f"Skipping Quest {task.get('title')}")
+                                continue
                             recourceId = task.get('recourceId')
                             data_done_task = fastmint.done_task(token, recourceId)
                             if data_done_task is not None:
