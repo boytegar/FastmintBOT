@@ -96,7 +96,7 @@ def main():
             time.sleep(2)
             print_('Daily Checkin ...')
             data_checkin = fastmint.daily_checkin(token)
-            visits = data_checkin.get('visits', 0)
+            # visits = data_checkin.get('visits', 0)
             print_(f"Daily Checkin Done ")
 
             time.sleep(2)
@@ -128,7 +128,7 @@ def main():
                         payload = {"id":wallet_id}
                         fastmint.upgrade(token, payload)
                     else:
-                        print_("Balance Not enough for upgrade")
+                        print_(f"Balance Not enough for upgrade, Need Cost {data_wallet.get('cost',0)}")
 
 
             if wallet_selector == 'y':
@@ -158,6 +158,9 @@ def main():
                             time.sleep(2)
                             print_(f"Starting Task : {task.get('title')}")
                             if 'telegram' in task.get('title').lower():
+                                print_(f"Skipping Quest {task.get('title')}")
+                                continue
+                            if 'react' in task.get('title').lower():
                                 print_(f"Skipping Quest {task.get('title')}")
                                 continue
                             recourceId = task.get('recourceId')
